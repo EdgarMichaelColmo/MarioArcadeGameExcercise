@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour
             playerStateHurt = true;
             playerCanMove = false;
 
-            PlayerData.HP -= 1;
+            PlayerData.P1_HP -= 1;
             UIController.Instance.UpdateUI();
 
             int force = 150;
@@ -108,23 +108,30 @@ public class PlayerController : MonoBehaviour
                 rigidPlayer.AddForce(new Vector2(force, 300));
             }
 
-
-            if(PlayerData.HP <= 0)
-            {
-                UIController.Instance.ShowPanel("GAME_OVER_LIVES");
-            }
-            else
-            {
-                StartCoroutine(coroutineInvincible());
-            }
+            StartCoroutine(coroutineInvincible());
         }
     }
 
     private IEnumerator coroutineInvincible()
     {
-        yield return new WaitForSeconds(2);
+        float time = 2, loop = 16;
+
+        for (int i = 0; i < loop; i++)
+        {
+            if (i % 2 == 0)
+                spritePlayer.color = Color.red;
+            else
+                spritePlayer.color = Color.white;
+            yield return new WaitForSeconds(time / loop);
+        }
+
 
         playerStateHurt = false;
         playerCanMove = true;
+
+        if (PlayerData.P1_HP <= 0)
+        {
+            UIController.Instance.ShowPanel("GAME_OVER_LIVES");
+        }
     }
 }
