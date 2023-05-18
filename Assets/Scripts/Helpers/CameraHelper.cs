@@ -8,6 +8,6 @@ public class CameraHelper : MonoBehaviour
 
     private void FixedUpdate()
     {
-        transform.localPosition = new Vector3(followTransform.localPosition.x, followTransform.localPosition.y, transform.localPosition.z);
+        transform.localPosition = new Vector3(followTransform.localPosition.x, transform.localPosition.y, transform.localPosition.z);
     }
 }

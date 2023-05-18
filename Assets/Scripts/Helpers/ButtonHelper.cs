@@ -23,6 +23,10 @@ public class ButtonHelper : MonoBehaviour
             case "BUTTON_EXIT_GAME":
                 Application.Quit();
                 break;
+
+            case "BUTTON_RETURN_MENU":
+                SceneManager.LoadScene("S01_MAINMENU");
+                break;
         }
     }
 }

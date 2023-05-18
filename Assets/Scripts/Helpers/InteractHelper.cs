@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Schema;
 using UnityEngine;
 
 public class InteractHelper : MonoBehaviour
@@ -15,8 +16,7 @@ public class InteractHelper : MonoBehaviour
             case "INTERACT_COIN":
                 if (collision.gameObject.tag.Equals("Player"))
                 {
-                    //print("+1 coin");
-                    PlayerStatController.SCORE += value;
+                    PlayerData.SCORE += value;
                     UIController.Instance.UpdateUI();
                     gameObject.SetActive(false);
                 }
@@ -24,10 +24,27 @@ public class InteractHelper : MonoBehaviour
             case "INTERACT_SPIKE":
                 if (collision.gameObject.tag.Equals("Player"))
                 {
-                    //print("+1 coin");
-                    PlayerStatController.HP -= 1;
-                    UIController.Instance.UpdateUI();
-                    gameObject.SetActive(false);
+                    if (value == 0)
+                    {
+                        PlayerController.Instance.PlayerHurt(true);
+                    }
+                    else
+                    {
+                        PlayerController.Instance.PlayerHurt(false);
+                    }
+                }
+                break;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        switch (Interact_ID)
+        {
+            case "INTERACT_FLAG":
+                if (collision.gameObject.tag.Equals("Player"))
+                {
+                    UIController.Instance.ShowPanel("GAME_FINISH");
                 }
                 break;
         }

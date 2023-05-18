@@ -8,7 +8,18 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rigidPlayer;
     private Animator animPlayer;
     private SpriteRenderer spritePlayer;
-    [SerializeField] private bool playerStateOnAir = false;
+
+    private bool playerStateOnAir = false, playerStateHurt = false;
+    public bool playerCanMove = true;
+
+    public static PlayerController Instance;
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(this);
+    }
 
     void Start()
     {
@@ -20,26 +31,29 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.A))
+        if (playerCanMove)
         {
-            transPlayer.localPosition += new Vector3(-0.1f, 0, 0);
-            AnimationSetWalk(true, "left");
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            transPlayer.localPosition += new Vector3(0.1f, 0, 0);
-            AnimationSetWalk(true, "right");
-        }
+            if (Input.GetKey(KeyCode.A))
+            {
+                transPlayer.localPosition += new Vector3(-0.1f, 0, 0);
+                AnimationSetWalk(true, "left");
+            }
+            else if (Input.GetKey(KeyCode.D))
+            {
+                transPlayer.localPosition += new Vector3(0.1f, 0, 0);
+                AnimationSetWalk(true, "right");
+            }
 
-        if (Input.GetKeyUp(KeyCode.D) || Input.GetKeyUp(KeyCode.A))
-        {
-            AnimationSetWalk(false);
-        }
+            if (Input.GetKeyUp(KeyCode.D) || Input.GetKeyUp(KeyCode.A))
+            {
+                AnimationSetWalk(false);
+            }
 
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)) && !playerStateOnAir)
-        {
-            playerStateOnAir = true;
-            rigidPlayer.AddForce(new Vector2(0, 500));
+            if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)) && !playerStateOnAir)
+            {
+                playerStateOnAir = true;
+                rigidPlayer.AddForce(new Vector2(0, 500));
+            }
         }
     }
 
@@ -58,7 +72,7 @@ public class PlayerController : MonoBehaviour
     //    }
     //}
 
-    private void AnimationSetWalk(bool cond, string flip = "")
+    public void AnimationSetWalk(bool cond, string flip = "")
     {
         if (animPlayer.GetBool("isWalking") != cond)
         {
@@ -72,5 +86,45 @@ public class PlayerController : MonoBehaviour
             else if (flip == "right" && spritePlayer.flipX)
                 spritePlayer.flipX = false;
         }
+    }
+
+    public void PlayerHurt(bool directionIsLeft)
+    {
+        if (!playerStateHurt)
+        {
+            playerStateHurt = true;
+            playerCanMove = false;
+
+            PlayerData.HP -= 1;
+            UIController.Instance.UpdateUI();
+
+            int force = 150;
+            if (directionIsLeft)
+            {
+                rigidPlayer.AddForce(new Vector2(-force, 300));
+            }
+            else
+            {
+                rigidPlayer.AddForce(new Vector2(force, 300));
+            }
+
+
+            if(PlayerData.HP <= 0)
+            {
+                UIController.Instance.ShowPanel("GAME_OVER_LIVES");
+            }
+            else
+            {
+                StartCoroutine(coroutineInvincible());
+            }
+        }
+    }
+
+    private IEnumerator coroutineInvincible()
+    {
+        yield return new WaitForSeconds(2);
+
+        playerStateHurt = false;
+        playerCanMove = true;
     }
 }
