@@ -52,6 +52,7 @@ public class ButtonHelper : MonoBehaviour
 
             // GAME SCENE
             case "BUTTON_START_SP":
+                PlayerData.LEVEL = 1;
                 SceneManager.LoadScene("S02_GAME_SP");
                 break;
             case "BUTTON_EXIT_GAME":
@@ -63,14 +64,25 @@ public class ButtonHelper : MonoBehaviour
                 break;
 
             case "BUTTON_ADD_HISCORE":
+                UIController.Instance.ShowPanel("GAME_ADD_HISCORE");
+                break;
+            case "BUTTON_VIEW_HISCORE":
                 UIController.Instance.ShowPanel("GAME_HISCORE");
                 break;
+            case "BUTTON_RETURN_GAME_END":
+                UIController.Instance.ShowPanel("GAME_FINISH_RE");
+                break;
 
-            // DEBUG
-            //case "BUTTON_DEBUG":
-            //    UIController.Instance.UpdateHiScore();
-            //    UIController.Instance.ShowPanel("GAME_HISCORE");
-            //    break;
+            case "BUTTON_NEXT_LEVEL":
+                PlayerData.LEVEL += 1;
+                LevelController.Instance.LevelStart();
+                UIController.Instance.HidePanel();
+                break;
+
+                //DEBUG
+                //case "BUTTON_DEBUG":
+                //AudioController.Instance.PlayAudio(AudioController.AudioType.Jump);
+                //break;
         }
     }
 }

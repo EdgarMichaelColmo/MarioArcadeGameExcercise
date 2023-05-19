@@ -53,14 +53,15 @@ public class EnemyController : MonoBehaviour
         {
             case State.Move:
 
-                float rangeX = Random.Range(-300, 300f), rangeY = Random.Range(250, 400);
+                //float rangeX = Random.Range(-300, 300f), rangeY = Random.Range(250, 400);
+                float rangeX = Random.Range(-20, 20f), rangeY = Random.Range(3, 10);
 
                 if (rangeX > 0)
                     sprite.flipX = false;
                 else
                     sprite.flipX = true;
 
-                rigidbody_.AddForce(new Vector2(rangeX, rangeY));
+                rigidbody_.velocity = (new Vector2(rangeX, rangeY));
                 break;
             case State.Attack:
                 break;
@@ -73,11 +74,11 @@ public class EnemyController : MonoBehaviour
         {
             Vector2 vect_direction = collision.transform.localPosition - transform.localPosition;
 
-            bool hurtLeft = false;
+            PlayerController.DamageDirection dmgDir = PlayerController.DamageDirection.HitRight;
             if (vect_direction.x < 0)
-                hurtLeft = true;
+                dmgDir = PlayerController.DamageDirection.HitLeft;
 
-            collision.gameObject.GetComponent<PlayerController>().PlayerHurt(hurtLeft);
+            collision.gameObject.GetComponent<PlayerController>().PlayerHurt(dmgDir);
         }
     }
 

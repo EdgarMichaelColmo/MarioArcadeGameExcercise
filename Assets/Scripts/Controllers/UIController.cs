@@ -30,17 +30,24 @@ public class UIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textHP;
     [SerializeField] private TextMeshProUGUI textScore;
     [SerializeField] private TextMeshProUGUI textTime;
+    [SerializeField] private TextMeshProUGUI textLevel;
+
     [SerializeField] private GameObject panel_gameEnd;
     [SerializeField] private TextMeshProUGUI textEnd_Title;
     [SerializeField] private TextMeshProUGUI textEnd_TotalScore;
     [SerializeField] private TextMeshProUGUI textEnd_Name;
+    [SerializeField] private GameObject gameobj_HiScoreBackButton;
     [SerializeField] private Button button_continue;
+
     [SerializeField] private GameObject panel_gameFinish;
     [SerializeField] private TextMeshProUGUI textFinish_HP;
     [SerializeField] private TextMeshProUGUI textFinish_Score;
     [SerializeField] private TextMeshProUGUI textFinish_Time;
+    [SerializeField] private Button button_nextLevel;
+
     [SerializeField] private GameObject panel_gameOver;
     [SerializeField] private TextMeshProUGUI textGameOver_Cause;
+
     [SerializeField] private GameObject panel_hiscore;
     [SerializeField] private TextMeshProUGUI textHiScore_Names;
     [SerializeField] private TextMeshProUGUI textHiScore_Scores;
@@ -71,6 +78,7 @@ public class UIController : MonoBehaviour
     {
         textHP.text = "P1 HP: x" + PlayerData.P1_HP;
         textScore.text = "P1 Score: " + PlayerData.P1_SCORE;
+        textLevel.text = "Level: " + PlayerData.LEVEL;
     }
     public void UpdateHiScore(bool isMainMenu = false)
     {
@@ -106,6 +114,7 @@ public class UIController : MonoBehaviour
         panel_gameFinish.gameObject.SetActive(false);
         panel_gameOver.gameObject.SetActive(false);
         panel_hiscore.gameObject.SetActive(false);
+        gameobj_HiScoreBackButton.SetActive(false);
 
         switch (panel_type)
         {
@@ -115,10 +124,41 @@ public class UIController : MonoBehaviour
                 textFinish_HP.text = "Lives left: " + PlayerData.P1_HP;
                 textFinish_Score.text = textScore.text;
                 textFinish_Time.text = textTime.text;
+
+                if(LevelController.Instance.CheckIfNextLevelAvailable())
+                {
+                    button_nextLevel.interactable = true;
+                }
+                else
+                {
+                    button_nextLevel.interactable = false;
+                }
+
                 PlayerData.P1_SCORE += 10 * PlayerData.P1_HP+ PlayerData.TIME;
+                UpdateUI();
+
 
                 panel_gameEnd.gameObject.SetActive(true);
                 panel_gameFinish.SetActive(true);
+                break;
+
+            case "GAME_FINISH_RE":
+
+                if (PlayerData.LEVEL_FINISH)
+                {
+                    textEnd_Title.text = "LEVEL COMPLETE!";
+                    textFinish_Time.text = textTime.text;
+                    textFinish_HP.text = "Lives left: " + PlayerData.P1_HP;
+                    textFinish_Score.text = textScore.text;
+
+                    panel_gameFinish.SetActive(true);
+                }
+                else
+                {
+                    panel_gameOver.SetActive(true);
+                }
+
+                panel_gameEnd.gameObject.SetActive(true);
                 break;
 
             case "GAME_OVER_LIVES":
@@ -139,9 +179,18 @@ public class UIController : MonoBehaviour
                 panel_gameOver.SetActive(true);
                 break;
 
-            case "GAME_HISCORE":
+            case "GAME_ADD_HISCORE":
 
                 LevelController.Instance.AddHiScore(textEnd_Name.text, PlayerData.P1_SCORE);
+                UpdateHiScore();
+                panel_gameEnd.gameObject.SetActive(true);
+                panel_hiscore.SetActive(true);
+                break;
+
+            case "GAME_HISCORE":
+
+                gameobj_HiScoreBackButton.SetActive(true);
+
                 UpdateHiScore();
                 panel_gameEnd.gameObject.SetActive(true);
                 panel_hiscore.SetActive(true);
@@ -150,6 +199,14 @@ public class UIController : MonoBehaviour
         textEnd_TotalScore.text = "TOTAL SCORE: " + PlayerData.P1_SCORE;
 
 
+    }
+    public void HidePanel()
+    {
+        panel_gameEnd.gameObject.SetActive(false);
+        panel_gameFinish.gameObject.SetActive(false);
+        panel_gameOver.gameObject.SetActive(false);
+        panel_hiscore.gameObject.SetActive(false);
+        gameobj_HiScoreBackButton.SetActive(false);
     }
 
     public void ShowPanelMainMenu(string panel_type)
