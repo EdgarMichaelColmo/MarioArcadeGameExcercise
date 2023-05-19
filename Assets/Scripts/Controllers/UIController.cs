@@ -52,6 +52,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textHiScore_Names;
     [SerializeField] private TextMeshProUGUI textHiScore_Scores;
 
+    [Header("DEBUGGING")]
+    [SerializeField] private TextMeshProUGUI text_DebugText;
+
     public class HiScoreJSONClass
     {
         public string[] Names;
@@ -62,7 +65,7 @@ public class UIController : MonoBehaviour
     {
         if (PlayerData.HISCORE_NAMES.Length <= 0)
         {
-            TextAsset jsonText = Resources.Load<TextAsset>("JSON/HiScoreList") as TextAsset;
+            TextAsset jsonText = Resources.Load<TextAsset>("HiScoreList") as TextAsset;
             string strJson = jsonText.text;
             HiScoreJSONClass dJsonClass = JsonUtility.FromJson<HiScoreJSONClass>(strJson);
 
@@ -239,5 +242,10 @@ public class UIController : MonoBehaviour
                 panel_hiscore_mainmenu.gameObject.SetActive(true);
                 break;
         }
+    }
+
+    public void DebugGame()
+    {
+        text_DebugText.text = Application.dataPath;
     }
 }

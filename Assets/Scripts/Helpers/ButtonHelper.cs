@@ -43,7 +43,7 @@ public class ButtonHelper : MonoBehaviour
                 hJsonClass.Scores = new int[0];
 
                 string json = JsonUtility.ToJson(hJsonClass);
-                File.WriteAllText(Application.dataPath + "/Resources/JSON/HiScoreList.json", json);
+                File.WriteAllText(Application.dataPath + "/Resources/HiScoreList.json", json);
                 break;
 
             case "BUTTON_HISCORES":
@@ -79,10 +79,10 @@ public class ButtonHelper : MonoBehaviour
                 UIController.Instance.HidePanel();
                 break;
 
-                //DEBUG
-                //case "BUTTON_DEBUG":
-                //AudioController.Instance.PlayAudio(AudioController.AudioType.Jump);
-                //break;
+            //DEBUG
+            case "BUTTON_DEBUG":
+                UIController.Instance.DebugGame();
+                break;
         }
     }
 }

@@ -75,7 +75,7 @@ public class LevelController : MonoBehaviour
 
     public void AddHiScore(string name, int score)
     {
-        TextAsset jsonText = Resources.Load<TextAsset>("JSON/HiScoreList") as TextAsset;
+        TextAsset jsonText = Resources.Load<TextAsset>("HiScoreList") as TextAsset;
         string strJson = jsonText.text;
         HiScoreJSONClass hJsonClass = JsonUtility.FromJson<HiScoreJSONClass>(strJson);
 
@@ -115,7 +115,7 @@ public class LevelController : MonoBehaviour
 
 
         string json = JsonUtility.ToJson(hJsonClass);
-        File.WriteAllText(Application.dataPath + "/Resources/JSON/HiScoreList.json", json);
+        File.WriteAllText(Application.dataPath + "/Resources/HiScoreList.json", json);
 
         PlayerData.HISCORE_NAMES = list_names.ToArray();
         PlayerData.HISCORE_SCORES = list_scores.ToArray();
